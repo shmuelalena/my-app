@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f0f0f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="האפליקציה שלי" />
+  <meta name="description" content="אפליקציה PWA לדוגמה" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>האפליקציה שלי</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --accent: #e8ff47;
+      --text: #f0f0f0;
+      --muted: #888;
+      --radius: 18px;
+    }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* TOP BAR */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 52px 24px 16px;
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.3); }
+    }
+
+    /* MAIN */
+    main {
+      flex: 1;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* HERO CARD */
+    .hero-card {
+      background: var(--accent);
+      color: #0f0f0f;
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .hero-card::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; left: -30px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.08);
+    }
+
+    .hero-card h2 {
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+
+    .hero-card p {
+      font-size: 0.95rem;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+
+    /* GRID CARDS */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      animation: slideUp 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .card:active { transform: scale(0.96); border-color: var(--accent); }
+
+    .card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* LIST SECTION */
+    .section {
+      animation: slideUp 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .list-item:active { transform: scale(0.98); border-color: var(--accent); }
+
+    .list-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .list-text h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
+    .list-text p { font-size: 0.8rem; color: var(--muted); }
+
+    .list-arrow { margin-right: auto; color: var(--muted); font-size: 1rem; }
+
+    /* BOTTOM NAV */
+    nav {
+      display: flex;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 12px 0 28px;
+      position: sticky;
+      bottom: 0;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 8px;
+      transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      color: var(--muted);
+    }
+
+    .nav-item.active { color: var(--accent); }
+    .nav-item .nav-icon { font-size: 1.4rem; }
+    .nav-item span { font-size: 0.68rem; font-weight: 600; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>שלום! 👋</h1>
+    <div class="status-dot"></div>
+  </header>
+
+  <main>
+    <div class="hero-card">
+      <h2>האפליקציה<br/>שלי עובדת!</h2>
+      <p>PWA מותקנת ופועלת כמו אפליקציה אמיתית</p>
+    </div>
+
+    <div class="grid">
+      <div class="card" onclick="showToast('פעולה ראשונה! ✅')">
+        <span class="icon">🚀</span>
+        <h3>התחל</h3>
+        <p>לחץ כדי להתחיל</p>
+      </div>
+      <div class="card" onclick="showToast('הגדרות נפתחו ⚙️')">
+        <span class="icon">⚙️</span>
+        <h3>הגדרות</h3>
+        <p>שנה העדפות</p>
+      </div>
+      <div class="card" onclick="showToast('נתונים נטענו 📊')">
+        <span class="icon">📊</span>
+        <h3>סטטיסטיקות</h3>
+        <p>צפה בנתונים</p>
+      </div>
+      <div class="card" onclick="showToast('פרופיל נפתח 👤')">
+        <span class="icon">👤</span>
+        <h3>פרופיל</h3>
+        <p>המידע שלך</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">פעולות אחרונות</div>
+
+      <div class="list-item" onclick="showToast('פריט נבחר!')">
+        <div class="list-icon">📝</div>
+        <div class="list-text">
+          <h4>פריט ראשון</h4>
+          <p>לחץ לפתיחה</p>
+        </div>
+        <div class="list-arrow">‹</div>
+      </div>
+
+      <div class="list-item" onclick="showToast('פריט נבחר!')">
+        <div class="list-icon">🎯</div>
+        <div class="list-text">
+          <h4>פריט שני</h4>
+          <p>לחץ לפתיחה</p>
+        </div>
+        <div class="list-arrow">‹</div>
+      </div>
+
+      <div class="list-item" onclick="showToast('פריט נבחר!')">
+        <div class="list-icon">💡</div>
+        <div class="list-text">
+          <h4>פריט שלישי</h4>
+          <p>לחץ לפתיחה</p>
+        </div>
+        <div class="list-arrow">‹</div>
+      </div>
+    </div>
+  </main>
+
+  <nav>
+    <div class="nav-item active" onclick="setNav(this)">
+      <div class="nav-icon">🏠</div>
+      <span>בית</span>
+    </div>
+    <div class="nav-item" onclick="setNav(this); showToast('חיפוש 🔍')">
+      <div class="nav-icon">🔍</div>
+      <span>חיפוש</span>
+    </div>
+    <div class="nav-item" onclick="setNav(this); showToast('התראות 🔔')">
+      <div class="nav-icon">🔔</div>
+      <span>התראות</span>
+    </div>
+    <div class="nav-item" onclick="setNav(this); showToast('פרופיל 👤')">
+      <div class="nav-icon">👤</div>
+      <span>פרופיל</span>
+    </div>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log('SW registered'))
+          .catch(e => console.log('SW error:', e));
+      });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function setNav(el) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>
